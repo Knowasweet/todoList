@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-12">
+  <div>
     <Button icon="open" @click="$emit('open')" class="text-center" v-if="!isShowAddTodo" />
     <form @submit="onSubmit" v-if="isShowAddTodo">
       <div class="mb-10 rounded-xl border-2 border-gray-100 p-10 shadow-sm">

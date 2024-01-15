@@ -8,9 +8,9 @@
       </div>
       <div class="flex flex-wrap items-center gap-5">
         <div
-            v-for="(tag, index) of todo.tags"
-            :key="index"
-            class="rounded-xl bg-green-50 px-2 py-1 text-green-600"
+          v-for="(tag, index) of todo.tags"
+          :key="index"
+          class="p y-1 rounded-xl bg-green-50 px-2 text-green-600"
         >
           {{ tag }}
         </div>
@@ -24,8 +24,7 @@ defineProps({
   todo: {
     type: Object,
     required: true,
-    default: () => {
-    },
+    default: () => {},
   },
 })
 </script>
