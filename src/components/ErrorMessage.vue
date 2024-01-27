@@ -4,7 +4,7 @@
     leaveToClass="opacity-0 translate-y-[15px]"
   >
     <div
-      class="mx-28 mt-3 rounded-xl bg-rose-100 px-2 py-1 text-center text-xs font-medium text-rose-600 transition duration-500"
+      class="mx-28 rounded-xl bg-rose-100 px-[8px] py-[4px] text-center text-xs font-medium text-rose-600 transition duration-300"
       v-if="error"
     >
       {{ error }}
@@ -16,6 +16,7 @@
 defineProps({
   error: {
     type: String,
+    default: '',
     required: true,
   },
 })

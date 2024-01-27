@@ -6,8 +6,5 @@
 
 body {
   font-family: 'Inter', sans-serif;
-}
-
-.container-inside{
-  @apply w-[445px] mx-auto
+  background-color: #F9FAFB;
 }

@@ -3,11 +3,26 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import './index.css'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCirclePlus, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { faTrashCan, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
-library.add(faCheckCircle, faTrashCan, faCirclePlus, faCircleXmark)
+import { faTrashCan, faCircleXmark, faSquarePlus } from '@fortawesome/free-regular-svg-icons'
+import {
+  faCirclePlus,
+  faCheckCircle,
+  faXmark,
+  faCircleInfo,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faCheckCircle,
+  faTrashCan,
+  faCirclePlus,
+  faCircleXmark,
+  faSquarePlus,
+  faXmark,
+  faCircleInfo,
+)
 
 const app = createApp(App)
 

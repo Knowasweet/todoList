@@ -1,18 +1,18 @@
 <template>
-  <MainShadowBox />
-  <div class="container relative mx-auto">
-    <h1 class="container-inside mb-10 pt-9 text-center text-7xl text-slate-200">Daily Todo</h1>
-    <SectionTodoList :todos="todoStore.openTodos" />
-    <AddTodo class="container-inside" />
-    <SectionTodoList title="Done" :todos="todoStore.completedTodos" />
-  </div>
+  <PageShadows />
+  <Notification />
+  <OpenTodos :todos="todoStore.openTodos" />
+  <AddTodo />
+  <CompletedTodos :todos="todoStore.completedTodos" />
 </template>
 
 <script setup>
+import PageShadows from '@/components/PageShadows.vue'
 import AddTodo from '@/components/AddTodo.vue'
+import CompletedTodos from '@/components/CompletedTodos.vue'
+import OpenTodos from '@/components/OpenTodos.vue'
 import { useTodoStore } from '@/stores/TodoStore.js'
-import SectionTodoList from '@/components/SectionTodoList.vue'
-import MainShadowBox from '@/components/MainShadowBox.vue'
+import Notification from '@/components/Notification.vue'
 
 const todoStore = useTodoStore()
 </script>

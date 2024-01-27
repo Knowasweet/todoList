@@ -2,7 +2,7 @@
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
-    screens: { xl: '935px' },
+    screens: { xl: '445px' },
     colors: {
       transparent: 'transparent',
       current: '#6B7280',
@@ -21,23 +21,32 @@ export default {
       },
       red: {
         50: '#FEF2F2',
+        100: '#FFCDD2',
       },
       rose: {
         100: '#FCE7F3',
         600: '#E11D48',
       },
+
       green: {
         50: '#F0FDF4',
         600: '#16A34A',
       },
-      blue: {
-        50: '#E3F2FD',
-      },
-      yellow: {
-        50: '#FFFDE7',
-      },
       emerald: {
         600: '#059669',
+      },
+      blue: {
+        100: '#BBDEFB',
+        200: '#90CAF9',
+        600: '#1E88E5',
+      },
+      yellow: {
+        100: '#FFF9C4',
+        600: '#FDD835',
+      },
+      orange: {
+        100: '#FFE0B2',
+        600: '#FB8C00',
       },
       white: '#FFFFFF',
     },
