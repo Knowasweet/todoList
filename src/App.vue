@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <TodoApp />
-  </div>
+  <TodoApp />
 </template>
 
 <script setup>

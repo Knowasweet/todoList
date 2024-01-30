@@ -17,16 +17,12 @@ export const useTodoStore = defineStore('todoStore', () => {
     todo.creationDate = new Date()
     todo.modifiedDate = new Date()
     todos.value.push(todo)
-    notificationFlag.value = true
-    scrollToCreatedTodo(todo.id)
-    offNotificationFlag()
   }
 
-  const openTodos = computed(() => {
+  const openedTodos = computed(() => {
     return todos.value
       .filter((todo) => !todo.completed)
-      .sort(sortByCreationDate)
-      .sort(sortByPriority)
+      .sort((a, b) => sortByPriority(a, b) || sortByCreationDate(a, b))
   })
 
   const completedTodos = computed(() => {
@@ -58,27 +54,6 @@ export const useTodoStore = defineStore('todoStore', () => {
     todos.value = todos.value.filter((todo) => todo.id !== id)
   }
 
-  const scrollToCreatedTodo = (todoId) => {
-    setTimeout(() => {
-      const createdTodo = document.querySelector(`.todo-${todoId}`)
-      const scrollTodo =
-        createdTodo.offsetTop - window.innerHeight / 2 + createdTodo.offsetHeight / 2
-
-      window.scrollTo({
-        top: scrollTodo,
-        behavior: 'smooth',
-      })
-    }, 0)
-  }
-
-  const notificationFlag = ref(false)
-
-  const offNotificationFlag = () => {
-    setTimeout(() => {
-      notificationFlag.value = false
-    }, 3000)
-  }
-
   watch(
     () => todos.value,
     (state) => {
@@ -95,10 +70,9 @@ export const useTodoStore = defineStore('todoStore', () => {
   )
   return {
     todos,
-    openTodos,
+    openedTodos,
     completedTodos,
     countTodos,
-    notificationFlag,
     addTodo,
     removeTodo,
     updateTodoCompleted,

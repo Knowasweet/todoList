@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-[18px]">
+  <div class="flex flex-row-reverse justify-end gap-[18px]">
     <div v-for="priority of priorities" :key="priority.id">
       <input
         type="radio"
@@ -42,7 +42,7 @@ const priorities = ref([
     id: 3,
     name: 'Low',
     hover: 'hover:text-blue-600 hover:bg-blue-100 hover:border-blue-100',
-    active: 'text-blue-600 bg-blue-100 border-blue-100',
+    active: 'text-lightblue-600 bg-blue-100 border-blue-100',
   },
 ])
 </script>

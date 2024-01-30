@@ -7,11 +7,11 @@
       leaveToClass="opacity-0 translate-y-[5px]"
       leaveActiveClass="transition duration-300"
     >
-      <div v-if="!isShowAddTodo && todoStore.countTodos !== 0" class="text-center">
+      <div v-if="isShowAddTodo" class="text-center">
         <button @click="toggleAddTodo">
           <FontAwesomeIcon
             :icon="['fas', 'circle-plus']"
-            class="h-[36px] w-[36px] text-slate-200 transition-colors duration-300 hover:text-green-600"
+            class="hover:text-green-300 h-[36px] w-[36px] text-slate-200 transition-colors duration-300 active:text-green-600"
           />
         </button>
       </div>
@@ -26,18 +26,18 @@
                 type="text"
                 v-model="title"
                 v-bind="titleAttrs"
-                class="w-full rounded-md border-[1px] border-gray-100 p-[14px] text-xs font-medium text-gray-700 placeholder-slate-200 outline-gray-400"
+                class="border-gray-300 placeholder-gray-300 w-full rounded-md border-[1px] p-[14px] text-xs font-medium text-gray-700 outline-gray-400"
                 placeholder="Take dog out on walk"
               />
               <ErrorMessage :error="errors.title" />
             </div>
 
-            <div class="space-y-[12px]">
+            <div class="h-[70px] space-y-[12px]">
               <textarea
                 type="text"
                 v-model="text"
                 v-bind="textAttrs"
-                class="h-[70px] w-full resize-none rounded-md border-[1px] border-gray-100 p-[14px] text-xs font-medium text-gray-700 placeholder-slate-200 outline-gray-400"
+                class="placeholder-gray-300 border-gray-300 h-[70px] w-full resize-none rounded-md border-[1px] p-[14px] text-xs font-medium text-gray-700 outline-gray-400"
                 placeholder="He needs vaccine shot too"
               />
               <ErrorMessage :error="errors.text" />
@@ -45,7 +45,7 @@
 
             <div class="space-y-[29px]">
               <div class="space-y-[12px]">
-                <TagInput @sendTagsToParent="receiveTagsFromChild" :removedTags="removedTags" />
+                <TagInput @updateTags="updateTags" :hasTagsRemoved="hasTagsRemoved" />
                 <ErrorMessage :error="errors.tags" />
               </div>
               <div class="space-y-[12px]">
@@ -60,7 +60,7 @@
               <div class="flex items-center">
                 <FontAwesomeIcon
                   :icon="['far', 'circle-xmark']"
-                  class=":text-rose-600 h-[36px] w-[36px] rounded-full text-slate-400 transition-colors duration-300 hover:text-rose-600"
+                  class="active:text-red-600 h-[36px] w-[36px] rounded-full text-slate-400 transition-colors duration-300 hover:text-red-100"
                 />
               </div>
             </button>
@@ -70,7 +70,7 @@
               >
                 <FontAwesomeIcon
                   :icon="['fas', 'check-circle']"
-                  class="submit-icon m absolute left-1/2 top-1/2 h-[29px] w-[29px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-400 text-gray-50 transition-colors duration-300"
+                  class="submit-icon m hover: absolute left-1/2 top-1/2 h-[29px] w-[29px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-400 text-gray-50 transition-colors duration-300"
                 />
               </div>
             </button>
@@ -86,18 +86,20 @@ import ErrorMessage from '@/components/ErrorMessage.vue'
 import TagInput from '@/components/TagInput.vue'
 import PriorityButtons from '@/components/PriorityButtons.vue'
 
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
+
 import { useTodoStore } from '@/stores/TodoStore.js'
+
 const todoStore = useTodoStore()
 
 const isShowAddTodo = ref(false)
-const removedTags = ref(false)
-const toggleAddTodo = () => {
-  isShowAddTodo.value = !isShowAddTodo.value
-}
+const hasTagsRemoved = ref(false)
 
 const { defineField, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
@@ -119,24 +121,77 @@ const [priorityValue] = defineField('priorityValue')
 
 const onSubmit = handleSubmit((content, { resetForm }) => {
   todoStore.addTodo(content)
-  removedTags.value = true
 
-  setTimeout(() => {
-    removedTags.value = false
-  }, 100)
-
+  isShowAddTodo.value = true
+  hasTagsRemoved.value = true
   resetForm()
-  isShowAddTodo.value = false
+
+  notify(todoStore.countTodos)
+  scrollToCreatedTodo(content.id)
 })
 
-const receiveTagsFromChild = (list) => {
-  tags.value = list
+const notify = (index) => {
+  toast.info(`Todo #${index} has been created!`, {
+    transition: 'slide',
+    multiple: false,
+    collapse: false,
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 2000,
+  })
 }
+
+const scrollToCreatedTodo = (todoId) => {
+  setTimeout(() => {
+    const createdTodo = document.querySelector(`.todo-${todoId}`)
+    const scrollTodo = createdTodo.offsetTop - window.innerHeight / 2 + createdTodo.offsetHeight / 2
+    window.scrollTo({
+      top: scrollTodo,
+      behavior: 'smooth',
+    })
+  }, 100)
+}
+
+const updateTags = (allTags) => {
+  tags.value = allTags
+}
+
+watch(
+  () => hasTagsRemoved.value,
+  (newValue) => {
+    if (newValue) {
+      hasTagsRemoved.value = false
+    }
+  },
+)
+
+const toggleAddTodo = () => {
+  isShowAddTodo.value = !isShowAddTodo.value
+}
+
+watch(
+  () => todoStore.countTodos,
+  (newValue) => {
+    if (!newValue) {
+      toggleAddTodo()
+    }
+  },
+)
+
+onMounted(() => {
+  if (todoStore.countTodos) {
+    toggleAddTodo()
+  }
+})
 </script>
 
 <style scoped>
 .submit-btn:hover .submit-icon {
   background: #f9fafb;
+  color: #81c784;
+}
+
+.submit-btn:active .submit-icon {
+  background: #f3f4f6;
   color: #16a34a;
 }
 </style>

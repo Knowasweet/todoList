@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-[21px] mt-[45px]">
+  <div class="mb-[21px]">
     <h1 class="text-center text-7xl text-slate-200">Daily Todo</h1>
     <div v-if="todos.length" class="mt-[39px]">
       <div class="open-todos space-y-[34px]">

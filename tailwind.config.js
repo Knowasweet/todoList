@@ -15,6 +15,7 @@ export default {
       gray: {
         50: '#F9FAFB',
         100: '#F3F4F6',
+        300: '#E0E0E0',
         400: '#9CA3AF',
         500: '#6B7280',
         700: '#374151',
@@ -22,6 +23,7 @@ export default {
       red: {
         50: '#FEF2F2',
         100: '#FFCDD2',
+        600: '#E53935',
       },
       rose: {
         100: '#FCE7F3',
@@ -30,10 +32,14 @@ export default {
 
       green: {
         50: '#F0FDF4',
+        300: '#81C784',
         600: '#16A34A',
       },
       emerald: {
         600: '#059669',
+      },
+      lightblue: {
+        600: '#1E88E5',
       },
       blue: {
         100: '#BBDEFB',
