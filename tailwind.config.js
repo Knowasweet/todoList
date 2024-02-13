@@ -9,6 +9,7 @@ export default {
       slate: {
         100: '#F1F5F9',
         200: '#E2E8F0',
+        300: '#CBD5E1',
         400: '#94A3B8',
       },
       black: '#374151',
@@ -24,6 +25,7 @@ export default {
         50: '#FEF2F2',
         100: '#FFCDD2',
         600: '#E53935',
+        800: '#C62828',
       },
       rose: {
         100: '#FCE7F3',
@@ -34,12 +36,11 @@ export default {
         50: '#F0FDF4',
         300: '#81C784',
         600: '#16A34A',
+        800: '#2E7D32',
+        900: '#1B5E20',
       },
       emerald: {
         600: '#059669',
-      },
-      lightblue: {
-        600: '#1E88E5',
       },
       blue: {
         100: '#BBDEFB',

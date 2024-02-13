@@ -11,7 +11,7 @@
         <button @click="toggleAddTodo">
           <FontAwesomeIcon
             :icon="['fas', 'circle-plus']"
-            class="hover:text-green-300 h-[36px] w-[36px] text-slate-200 transition-colors duration-300 active:text-green-600"
+            class="h-[36px] w-[36px] text-slate-200 transition-colors duration-300 hover:text-green-600 active:text-green-800"
           />
         </button>
       </div>
@@ -26,18 +26,18 @@
                 type="text"
                 v-model="title"
                 v-bind="titleAttrs"
-                class="border-gray-300 placeholder-gray-300 w-full rounded-md border-[1px] p-[14px] text-xs font-medium text-gray-700 outline-gray-400"
+                class="w-full rounded-[4px] border-[1px] border-gray-300 p-[14px] text-xs font-medium text-gray-700 placeholder-gray-300 outline-[4px] outline-gray-400"
                 placeholder="Take dog out on walk"
               />
               <ErrorMessage :error="errors.title" />
             </div>
 
-            <div class="h-[70px] space-y-[12px]">
+            <div class="space-y-[12px]">
               <textarea
                 type="text"
                 v-model="text"
                 v-bind="textAttrs"
-                class="placeholder-gray-300 border-gray-300 h-[70px] w-full resize-none rounded-md border-[1px] p-[14px] text-xs font-medium text-gray-700 outline-gray-400"
+                class="block h-[70px] w-full resize-none rounded-[4px] border-[1px] border-gray-300 p-[14px] text-xs font-medium text-gray-700 placeholder-gray-300 outline-gray-400"
                 placeholder="He needs vaccine shot too"
               />
               <ErrorMessage :error="errors.text" />
@@ -45,7 +45,7 @@
 
             <div class="space-y-[29px]">
               <div class="space-y-[12px]">
-                <TagInput @updateTags="updateTags" :hasTagsRemoved="hasTagsRemoved" />
+                <SelectTags @updateTags="updateTags" :hasTagsRemoved="isShowAddTodo" />
                 <ErrorMessage :error="errors.tags" />
               </div>
               <div class="space-y-[12px]">
@@ -60,7 +60,7 @@
               <div class="flex items-center">
                 <FontAwesomeIcon
                   :icon="['far', 'circle-xmark']"
-                  class="active:text-red-600 h-[36px] w-[36px] rounded-full text-slate-400 transition-colors duration-300 hover:text-red-100"
+                  class="h-[36px] w-[36px] rounded-full text-slate-400 transition-colors duration-300 hover:text-red-600 active:text-red-800"
                 />
               </div>
             </button>
@@ -70,7 +70,7 @@
               >
                 <FontAwesomeIcon
                   :icon="['fas', 'check-circle']"
-                  class="submit-icon m hover: absolute left-1/2 top-1/2 h-[29px] w-[29px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-400 text-gray-50 transition-colors duration-300"
+                  class="submit-icon absolute left-1/2 top-1/2 h-[29px] w-[29px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-400 text-gray-50 transition-colors duration-300"
                 />
               </div>
             </button>
@@ -83,8 +83,8 @@
 
 <script setup>
 import ErrorMessage from '@/components/ErrorMessage.vue'
-import TagInput from '@/components/TagInput.vue'
 import PriorityButtons from '@/components/PriorityButtons.vue'
+import SelectTags from '@/components/SelectTags.vue'
 
 import { onMounted, ref, watch } from 'vue'
 
@@ -99,17 +99,12 @@ import { useTodoStore } from '@/stores/TodoStore.js'
 const todoStore = useTodoStore()
 
 const isShowAddTodo = ref(false)
-const hasTagsRemoved = ref(false)
 
 const { defineField, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
     title: yup.string('Title must be a string').required('Title is required').default(''),
     text: yup.string('Text must be a string').default(''),
-    tags: yup
-      .array()
-      .of(yup.string('Tag must be string'))
-      .min(1, 'Tags are required')
-      .required('Tags are required'),
+    tags: yup.array().min(1, 'Tags are required').required('Tags are required'),
     priorityValue: yup.string('Priority must be a string').required('Priority is required'),
   }),
 })
@@ -123,7 +118,6 @@ const onSubmit = handleSubmit((content, { resetForm }) => {
   todoStore.addTodo(content)
 
   isShowAddTodo.value = true
-  hasTagsRemoved.value = true
   resetForm()
 
   notify(todoStore.countTodos)
@@ -155,15 +149,6 @@ const updateTags = (allTags) => {
   tags.value = allTags
 }
 
-watch(
-  () => hasTagsRemoved.value,
-  (newValue) => {
-    if (newValue) {
-      hasTagsRemoved.value = false
-    }
-  },
-)
-
 const toggleAddTodo = () => {
   isShowAddTodo.value = !isShowAddTodo.value
 }
@@ -187,11 +172,11 @@ onMounted(() => {
 <style scoped>
 .submit-btn:hover .submit-icon {
   background: #f9fafb;
-  color: #81c784;
+  color: #16a34a;
 }
 
 .submit-btn:active .submit-icon {
   background: #f3f4f6;
-  color: #16a34a;
+  color: #2e7d32;
 }
 </style>

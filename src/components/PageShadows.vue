@@ -1,6 +1,6 @@
 <template>
-  <div class="overlay-top fixed -top-16 z-10 h-16 w-full bg-white"></div>
-  <div class="overlay-bottom fixed -bottom-16 z-10 h-16 w-full bg-white"></div>
+  <div class="overlay-top fixed -top-16 z-20 h-16 w-full bg-white"></div>
+  <div class="overlay-bottom fixed -bottom-16 z-20 h-16 w-full bg-white"></div>
 </template>
 
 <style scoped>
