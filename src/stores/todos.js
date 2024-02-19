@@ -1,17 +1,13 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import { capitalizeFirstLetter } from '@/helpers/stringHelpers.js'
 
-export const useTodoStore = defineStore('todoStore', () => {
-  const id = ref(localStorage.getItem('id') ?? 0)
-  const todos = ref([])
-
-  const todosInLocalStorage = localStorage.getItem('todos')
-  if (todosInLocalStorage) {
-    todos.value = JSON.parse(todosInLocalStorage)
-  }
+export const useTodosStore = defineStore('todosStore', () => {
+  const nextTodoId = ref(localStorage.getItem('nextTodoId') ?? 0)
+  const todos = ref(JSON.parse(localStorage.getItem('todos')) ?? [])
 
   const addTodo = (todo) => {
-    todo.id = id.value++
+    todo.nextTodoId = nextTodoId.value++
     todo.title = capitalizeFirstLetter(todo.title)
     todo.completed = ref(false)
     todo.creationDate = new Date()
@@ -33,25 +29,21 @@ export const useTodoStore = defineStore('todoStore', () => {
     return todos.value.length
   })
 
-  const capitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  }
-
   const sortByCreationDate = (a, b) => new Date(b.creationDate) - new Date(a.creationDate)
   const sortByModifiedDate = (a, b) => new Date(b.modifiedDate) - new Date(a.modifiedDate)
 
   const sortByPriority = (a, b) => {
     const priorityOrder = { High: 1, Medium: 2, Low: 3 }
-    return priorityOrder[a.priorityValue] - priorityOrder[b.priorityValue]
+    return priorityOrder[a.priority] - priorityOrder[b.priority]
   }
 
-  const updateTodoCompleted = (id) => {
-    const todoToUpdate = todos.value.find((todo) => todo.id === id)
+  const updateTodoCompleted = (nextTodoId) => {
+    const todoToUpdate = todos.value.find((todo) => todo.nextTodoId === nextTodoId)
     todoToUpdate.completed = !todoToUpdate.completed
     todoToUpdate.modifiedDate = new Date()
   }
-  const removeTodo = (id) => {
-    todos.value = todos.value.filter((todo) => todo.id !== id)
+  const removeTodo = (nextTodoId) => {
+    todos.value = todos.value.filter((todo) => todo.nextTodoId !== nextTodoId)
   }
 
   watch(
@@ -63,9 +55,9 @@ export const useTodoStore = defineStore('todoStore', () => {
   )
 
   watch(
-    () => id.value,
-    (newId) => {
-      localStorage.setItem('id', JSON.stringify(newId))
+    () => nextTodoId.value,
+    (newTodoId) => {
+      localStorage.setItem('nextTodoId', JSON.stringify(newTodoId))
     },
   )
   return {

@@ -1,9 +1,9 @@
 <template>
   <PageShadows />
   <div class="my-[45px]">
-    <OpenedTodos :todos="todoStore.openedTodos" />
+    <OpenedTodos :todos="todosStore.openedTodos" />
     <AddTodo />
-    <CompletedTodos :todos="todoStore.completedTodos" />
+    <CompletedTodos :todos="todosStore.completedTodos" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import PageShadows from '@/components/PageShadows.vue'
 import AddTodo from '@/components/AddTodo.vue'
 import CompletedTodos from '@/components/CompletedTodos.vue'
 import OpenedTodos from '@/components/OpenedTodos.vue'
-import { useTodoStore } from '@/stores/TodoStore.js'
+import { useTodosStore } from '@/stores/todos.js'
 
-const todoStore = useTodoStore()
+const todosStore = useTodosStore()
 </script>

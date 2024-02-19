@@ -4,6 +4,9 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import './index.css'
 
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.css'
+
 import Vue3ColorPicker from 'vue3-colorpicker'
 import 'vue3-colorpicker/style.css'
 
@@ -28,8 +31,8 @@ library.add(
 )
 
 const app = createApp(App)
-
 app.use(createPinia())
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.use(Vue3ColorPicker)
+app.component('Multiselect', Multiselect)
 app.mount('#app')

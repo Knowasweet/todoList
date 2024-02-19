@@ -23,6 +23,7 @@
           >
             <div class="space-y-[12px]">
               <input
+                autofocus
                 type="text"
                 v-model="title"
                 v-bind="titleAttrs"
@@ -45,12 +46,12 @@
 
             <div class="space-y-[29px]">
               <div class="space-y-[12px]">
-                <SelectTags @updateTags="updateTags" :hasTagsRemoved="isShowAddTodo" />
+                <SelectTags v-model="tags" />
                 <ErrorMessage :error="errors.tags" />
               </div>
               <div class="space-y-[12px]">
-                <PriorityButtons v-model="priorityValue" />
-                <ErrorMessage :error="errors.priorityValue" />
+                <PriorityButtons v-model="priority" />
+                <ErrorMessage :error="errors.priority" />
               </div>
             </div>
           </div>
@@ -86,53 +87,39 @@ import ErrorMessage from '@/components/ErrorMessage.vue'
 import PriorityButtons from '@/components/PriorityButtons.vue'
 import SelectTags from '@/components/SelectTags.vue'
 
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 
-import { toast } from 'vue3-toastify'
-import 'vue3-toastify/dist/index.css'
+import { useTodosStore } from '@/stores/todos.js'
+import { notification } from '@/plugins/toastify.js'
 
-import { useTodoStore } from '@/stores/TodoStore.js'
+const todosStore = useTodosStore()
 
-const todoStore = useTodoStore()
-
-const isShowAddTodo = ref(false)
+const isShowAddTodo = ref(true)
 
 const { defineField, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
     title: yup.string('Title must be a string').required('Title is required').default(''),
     text: yup.string('Text must be a string').default(''),
     tags: yup.array().min(1, 'Tags are required').required('Tags are required'),
-    priorityValue: yup.string('Priority must be a string').required('Priority is required'),
+    priority: yup.string('Priority must be a string').required('Priority is required'),
   }),
 })
 
 const [title, titleAttrs] = defineField('title')
 const [text, textAttrs] = defineField('text')
 const [tags] = defineField('tags')
-const [priorityValue] = defineField('priorityValue')
+const [priority] = defineField('priority')
 
 const onSubmit = handleSubmit((content, { resetForm }) => {
-  todoStore.addTodo(content)
-
+  todosStore.addTodo(content)
   isShowAddTodo.value = true
   resetForm()
-
-  notify(todoStore.countTodos)
-  scrollToCreatedTodo(content.id)
+  notification(`Todo #${todosStore.countTodos} has been created!`)
+  scrollToCreatedTodo(content.nextTodoId)
 })
-
-const notify = (index) => {
-  toast.info(`Todo #${index} has been created!`, {
-    transition: 'slide',
-    multiple: false,
-    collapse: false,
-    position: toast.POSITION.TOP_RIGHT,
-    autoClose: 2000,
-  })
-}
 
 const scrollToCreatedTodo = (todoId) => {
   setTimeout(() => {
@@ -145,28 +132,18 @@ const scrollToCreatedTodo = (todoId) => {
   }, 100)
 }
 
-const updateTags = (allTags) => {
-  tags.value = allTags
-}
-
 const toggleAddTodo = () => {
   isShowAddTodo.value = !isShowAddTodo.value
 }
 
 watch(
-  () => todoStore.countTodos,
+  () => todosStore.countTodos,
   (newValue) => {
     if (!newValue) {
       toggleAddTodo()
     }
   },
 )
-
-onMounted(() => {
-  if (todoStore.countTodos) {
-    toggleAddTodo()
-  }
-})
 </script>
 
 <style scoped>

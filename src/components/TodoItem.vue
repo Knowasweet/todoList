@@ -2,7 +2,7 @@
   <div class="group flex justify-center">
     <div class="flex w-[1290px] items-center justify-between">
       <div class="mx-auto hidden group-hover:block">
-        <button @click="removeTodo(todo.id)">
+        <button @click="removeTodo(todo.nextTodoId)">
           <FontAwesomeIcon
             :icon="['far', 'trash-can']"
             size="6x"
@@ -12,10 +12,10 @@
       </div>
 
       <div
-        class="mx-auto rounded-[8px] border-x-[1px] bg-white px-[33px] py-[26px] shadow-sm transition-[padding] duration-1000 group-hover:mx-[10px] group-hover:px-[55px]"
+        class="mx-auto rounded-[8px] border-x-[1px] bg-white px-[33px] py-[26px] shadow-sm transition-[padding] duration-300 group-hover:mx-[10px] group-hover:px-[55px]"
         :class="[
           todo.completed ? 'border-l-transparent border-r-green-600' : 'border-transparent',
-          `todo-${todo.id}`,
+          `todo-${todo.nextTodoId}`,
         ]"
       >
         <div class="min-w-[445px] space-y-[12px]">
@@ -35,14 +35,14 @@
               class="h-[25px] rounded-[10px] px-[8px] py-[5px] text-center text-xs"
               :class="priorityColor"
             >
-              {{ todo.priorityValue }}
+              {{ todo.priority }}
             </div>
             <div
               v-for="(tag, index) of todo.tags"
               :key="index"
               class="h-[25px] truncate rounded-[10px] px-[8px] py-[5px] text-center text-xs font-bold"
               :style="{
-                backgroundColor: hexToRgba(tag.selectedColor, 0.2),
+                backgroundColor: colorConvertHexToRgba(tag.selectedColor, 0.2),
                 color: tag.selectedColor,
               }"
             >
@@ -53,7 +53,7 @@
       </div>
 
       <div class="mx-auto hidden group-hover:block">
-        <button type="button" @click="completeTodo(todo.id)">
+        <button type="button" @click="completeTodo(todo.nextTodoId)">
           <FontAwesomeIcon
             :icon="['fas', 'check-circle']"
             size="6x"
@@ -67,8 +67,9 @@
 </template>
 
 <script setup>
-import { useTodoStore } from '@/stores/TodoStore.js'
+import { useTodosStore } from '@/stores/todos.js'
 import { computed } from 'vue'
+import { colorConvertHexToRgba } from '@/helpers/colorHelpers.js'
 
 const props = defineProps({
   todo: {
@@ -77,13 +78,13 @@ const props = defineProps({
   },
 })
 
-const todoStore = useTodoStore()
+const todosStore = useTodosStore()
 const removeTodo = (id) => {
-  todoStore.removeTodo(id)
+  todosStore.removeTodo(id)
 }
 
 const completeTodo = (id) => {
-  todoStore.updateTodoCompleted(id)
+  todosStore.updateTodoCompleted(id)
 }
 
 const isCompleted = computed(() => {
@@ -94,7 +95,7 @@ const isCompleted = computed(() => {
 })
 
 const priorityColor = computed(() => {
-  switch (props.todo.priorityValue) {
+  switch (props.todo.priority) {
     case 'High':
       return 'text-rose-600 bg-red-100'
     case 'Medium':
@@ -103,14 +104,4 @@ const priorityColor = computed(() => {
       return 'text-blue-600 bg-blue-100'
   }
 })
-
-const hexToRgba = (hex, alpha) => {
-  hex = hex.replace(/^#/, '')
-
-  let r = parseInt(hex.substring(0, 2), 16)
-  let g = parseInt(hex.substring(2, 4), 16)
-  let b = parseInt(hex.substring(4, 6), 16)
-
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
-}
 </script>
