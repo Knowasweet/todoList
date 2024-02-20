@@ -49,14 +49,18 @@
                     />
                   </div>
                 </button>
-                <button>
+                <button type="submit">
                   <div
-                    class="submit-btn relative h-[36px] w-[36px] rounded-full bg-slate-400 transition-colors duration-300 hover:bg-slate-200"
+                    class="group flex h-[36px] w-[36px] items-center justify-center rounded-full bg-slate-400 transition-colors duration-300 hover:bg-green-600 active:bg-green-800"
                   >
-                    <FontAwesomeIcon
-                      :icon="['fas', 'check-circle']"
-                      class="submit-icon absolute left-1/2 top-1/2 h-[29px] w-[29px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-400 text-gray-50 transition-colors duration-300"
-                    />
+                    <div
+                      class="flex h-[29px] w-[29px] items-center justify-center rounded-full bg-white"
+                    >
+                      <FontAwesomeIcon
+                        :icon="['fas', 'check']"
+                        class="text-slate-400 transition-colors duration-300 group-hover:text-green-600 group-active:text-green-800"
+                      />
+                    </div>
                   </div>
                 </button>
               </div>
@@ -70,16 +74,18 @@
 
 <script setup>
 import ErrorMessage from '@/components/ErrorMessage.vue'
-import { ref } from 'vue'
 
-import { notification } from '@/plugins/toastify.js'
+import { ref } from 'vue'
+import { showInfoNotification } from '@/plugins/toastify.js'
 
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 
-import { useTagsStore } from '@/stores/tags.js'
-const tagsStore = useTagsStore()
+import { ColorPicker } from 'vue3-colorpicker'
 
+import { useTagsStore } from '@/stores/tags.js'
+
+const tagsStore = useTagsStore()
 const isShowModal = ref(false)
 
 const { defineField, errors, handleSubmit } = useForm({
@@ -87,10 +93,7 @@ const { defineField, errors, handleSubmit } = useForm({
     name: yup
       .string('Name must be a string')
       .required('Name is required')
-      .test('is-unique', 'Name must be unique', async (value) => {
-        // Assuming you have a function to check if the name is unique
-        return await tagsStore.isTagUnique(value)
-      }),
+      .test('is-unique', 'Name must be unique', (value) => tagsStore.isTagUnique(value)),
     selectedColor: yup.string('Color must be a string').required('Color is required'),
   }),
   initialValues: {
@@ -105,25 +108,13 @@ const onSubmit = handleSubmit((content, { resetForm }) => {
   tagsStore.addTag(content)
   resetForm()
   hide()
-  notification('Tag has been created!')
+  showInfoNotification('Tag has been created!')
 })
 
 const hide = () => {
   isShowModal.value = !isShowModal.value
 }
 </script>
-
-<style scoped>
-.submit-btn:hover .submit-icon {
-  background: #f9fafb;
-  color: #16a34a;
-}
-
-.submit-btn:active .submit-icon {
-  background: #f3f4f6;
-  color: #2e7d32;
-}
-</style>
 
 <style>
 .vc-color-wrap {

@@ -8,8 +8,8 @@
         label="name"
         placeholder="Search tag"
         openDirection="bottom"
-        :searchable="modelValue ? options.length - modelValue.length : 0"
-        :max="!options.length ? (!modelValue ? 1 : 0) : options.length"
+        :searchable="options.length > 0"
+        :max="options.length ? options.length : modelValue ? 0 : 1"
         :preserveSearch="true"
         :multiple="true"
         :showNoOptions="true"
@@ -41,7 +41,14 @@
             }"
           >
             <div>{{ option.name }}</div>
-            <div class="ml-[1px] cursor-pointer" @click="remove(option)">❌</div>
+            <div class="ml-[4px] cursor-pointer" @click="remove(option)">
+              <div class="flex items-center">
+                <FontAwesomeIcon
+                  :icon="['fas', 'xmark']"
+                  class="text-red-300 h-[12px] w-[12px] transition-colors duration-300 hover:text-red-600 active:text-red-800"
+                />
+              </div>
+            </div>
           </div>
         </template>
       </Multiselect>
@@ -58,6 +65,7 @@ import { colorConvertHexToRgba } from '@/helpers/colorHelpers.js'
 import { useTagsStore } from '@/stores/tags.js'
 const tagsStore = useTagsStore()
 
+// eslint-disable-next-line vue/require-prop-types
 const modelValue = defineModel({ required: true })
 const options = ref(tagsStore.tags)
 </script>
@@ -83,5 +91,9 @@ const options = ref(tagsStore.tags)
 
 .multiselect__select::before {
   @apply !border-t-gray-300;
+}
+
+.multiselect__element {
+  @apply hover:bg-gray-100;
 }
 </style>

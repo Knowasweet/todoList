@@ -2,7 +2,7 @@
   <div class="group flex justify-center">
     <div class="flex w-[1290px] items-center justify-between">
       <div class="mx-auto hidden group-hover:block">
-        <button @click="removeTodo(todo.nextTodoId)">
+        <button @click="removeTodo(todo.id)">
           <FontAwesomeIcon
             :icon="['far', 'trash-can']"
             size="6x"
@@ -15,10 +15,10 @@
         class="mx-auto rounded-[8px] border-x-[1px] bg-white px-[33px] py-[26px] shadow-sm transition-[padding] duration-300 group-hover:mx-[10px] group-hover:px-[55px]"
         :class="[
           todo.completed ? 'border-l-transparent border-r-green-600' : 'border-transparent',
-          `todo-${todo.nextTodoId}`,
+          `todo-${todo.id}`,
         ]"
       >
-        <div class="min-w-[445px] space-y-[12px]">
+        <div class="w-[445px] space-y-[12px] group-hover:min-w-[445px]">
           <h3
             class="line-clamp-2 text-2xl text-gray-700"
             :class="{ 'line-through': todo.completed }"
@@ -53,7 +53,7 @@
       </div>
 
       <div class="mx-auto hidden group-hover:block">
-        <button type="button" @click="completeTodo(todo.nextTodoId)">
+        <button type="button" @click="completeTodo(todo.id)">
           <FontAwesomeIcon
             :icon="['fas', 'check-circle']"
             size="6x"
@@ -102,6 +102,8 @@ const priorityColor = computed(() => {
       return 'text-orange-600 bg-orange-100'
     case 'Low':
       return 'text-blue-600 bg-blue-100'
+    default:
+      return ''
   }
 })
 </script>

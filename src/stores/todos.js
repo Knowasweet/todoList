@@ -7,7 +7,7 @@ export const useTodosStore = defineStore('todosStore', () => {
   const todos = ref(JSON.parse(localStorage.getItem('todos')) ?? [])
 
   const addTodo = (todo) => {
-    todo.nextTodoId = nextTodoId.value++
+    todo.id = nextTodoId.value++
     todo.title = capitalizeFirstLetter(todo.title)
     todo.completed = ref(false)
     todo.creationDate = new Date()
@@ -37,13 +37,14 @@ export const useTodosStore = defineStore('todosStore', () => {
     return priorityOrder[a.priority] - priorityOrder[b.priority]
   }
 
-  const updateTodoCompleted = (nextTodoId) => {
-    const todoToUpdate = todos.value.find((todo) => todo.nextTodoId === nextTodoId)
+  const updateTodoCompleted = (id) => {
+    const todoToUpdate = todos.value.find((todo) => todo.id === id)
     todoToUpdate.completed = !todoToUpdate.completed
     todoToUpdate.modifiedDate = new Date()
   }
-  const removeTodo = (nextTodoId) => {
-    todos.value = todos.value.filter((todo) => todo.nextTodoId !== nextTodoId)
+
+  const removeTodo = (id) => {
+    todos.value = todos.value.filter((todo) => todo.id !== id)
   }
 
   watch(
@@ -60,6 +61,7 @@ export const useTodosStore = defineStore('todosStore', () => {
       localStorage.setItem('nextTodoId', JSON.stringify(newTodoId))
     },
   )
+
   return {
     todos,
     openedTodos,

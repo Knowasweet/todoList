@@ -6,8 +6,9 @@
       enterActiveClass="transition duration-300"
       leaveToClass="opacity-0 translate-y-[5px]"
       leaveActiveClass="transition duration-300"
+      :key="isShowAddTodo"
     >
-      <div v-if="isShowAddTodo" class="text-center">
+      <div v-if="!isShowAddTodo" class="text-center">
         <button @click="toggleAddTodo">
           <FontAwesomeIcon
             :icon="['fas', 'circle-plus']"
@@ -23,7 +24,7 @@
           >
             <div class="space-y-[12px]">
               <input
-                autofocus
+                ref="titleInput"
                 type="text"
                 v-model="title"
                 v-bind="titleAttrs"
@@ -67,12 +68,16 @@
             </button>
             <button type="submit">
               <div
-                class="submit-btn relative h-[36px] w-[36px] rounded-full bg-slate-400 transition-colors duration-300 hover:bg-slate-200"
+                class="group flex h-[36px] w-[36px] items-center justify-center rounded-full bg-slate-400 transition-colors duration-300 hover:bg-green-600 active:bg-green-800"
               >
-                <FontAwesomeIcon
-                  :icon="['fas', 'check-circle']"
-                  class="submit-icon absolute left-1/2 top-1/2 h-[29px] w-[29px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-400 text-gray-50 transition-colors duration-300"
-                />
+                <div
+                  class="flex h-[29px] w-[29px] items-center justify-center rounded-full bg-white"
+                >
+                  <FontAwesomeIcon
+                    :icon="['fas', 'check']"
+                    class="text-slate-400 transition-colors duration-300 group-hover:text-green-600 group-active:text-green-800"
+                  />
+                </div>
               </div>
             </button>
           </div>
@@ -87,17 +92,18 @@ import ErrorMessage from '@/components/ErrorMessage.vue'
 import PriorityButtons from '@/components/PriorityButtons.vue'
 import SelectTags from '@/components/SelectTags.vue'
 
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 
 import { useTodosStore } from '@/stores/todos.js'
-import { notification } from '@/plugins/toastify.js'
+import { showInfoNotification } from '@/plugins/toastify.js'
 
 const todosStore = useTodosStore()
 
-const isShowAddTodo = ref(true)
+const isShowAddTodo = ref(false)
+const titleInput = ref(null)
 
 const { defineField, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
@@ -115,21 +121,21 @@ const [priority] = defineField('priority')
 
 const onSubmit = handleSubmit((content, { resetForm }) => {
   todosStore.addTodo(content)
-  isShowAddTodo.value = true
+  isShowAddTodo.value = false
   resetForm()
-  notification(`Todo #${todosStore.countTodos} has been created!`)
-  scrollToCreatedTodo(content.nextTodoId)
+  showInfoNotification(`Todo #${todosStore.countTodos} has been created!`)
+  scrollToCreatedTodo(content.id)
 })
 
 const scrollToCreatedTodo = (todoId) => {
   setTimeout(() => {
     const createdTodo = document.querySelector(`.todo-${todoId}`)
-    const scrollTodo = createdTodo.offsetTop - window.innerHeight / 2 + createdTodo.offsetHeight / 2
-    window.scrollTo({
-      top: scrollTodo,
+    createdTodo.scrollIntoView({
       behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
     })
-  }, 100)
+  }, 0)
 }
 
 const toggleAddTodo = () => {
@@ -144,16 +150,12 @@ watch(
     }
   },
 )
+
+watch(isShowAddTodo, (newValue) => {
+  if (newValue) {
+    nextTick(() => {
+      titleInput.value.focus()
+    })
+  }
+})
 </script>
-
-<style scoped>
-.submit-btn:hover .submit-icon {
-  background: #f9fafb;
-  color: #16a34a;
-}
-
-.submit-btn:active .submit-icon {
-  background: #f3f4f6;
-  color: #2e7d32;
-}
-</style>

@@ -13,6 +13,7 @@ module.exports = {
         ecmaVersion: 'latest',
     },
     rules: {
+        "prefer-const": "error",
         'vue/order-in-components': [
             'error',
             {

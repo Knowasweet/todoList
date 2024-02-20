@@ -18,6 +18,7 @@ import {
   faCheckCircle,
   faXmark,
   faCircleInfo,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -28,6 +29,7 @@ library.add(
   faSquarePlus,
   faXmark,
   faCircleInfo,
+  faCheck,
 )
 
 const app = createApp(App)
